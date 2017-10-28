@@ -22,8 +22,7 @@ Code is properly separated based upon Knockout best practices (follow an MVVM pa
 Clone the repo and open up `index.html` in your browser to launch the app. Enjoy!
 
 
-## Live Example
-[here](https://abeeralyaagoub.github.io/Udacity-Neighborhood-Map-Project/)
+## Live Example [here](https://abeeralyaagoub.github.io/Udacity-Neighborhood-Map-Project/)
 
 
 ### References
