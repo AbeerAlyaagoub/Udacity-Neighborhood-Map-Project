@@ -10,8 +10,11 @@ function initMap() {
         center: {
             lat: 24.711184
             , lng: 46.673401
-        }
-        , zoom: 13
+        }, 
+        zoom: 13,
+        disableDefaultUI: false,
+        scrollwheel: true,
+	    mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 
     // These are the real estate listings that will be shown to the user.
@@ -69,7 +72,7 @@ function initMap() {
 
         //Animal Planet
         {
-            title: 'Animal Palnet'
+            title: 'Animal Planet'
             , description: ''
             , location: {
                 lat: 24.715709
