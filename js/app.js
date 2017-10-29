@@ -3,67 +3,13 @@ var map;
 // var locations=[]; 
 // Create a new blank array for all the listing markers.
 var markers = [];
+
 var locations = [
-    //Advance Pet Clinic
-    {
-        title: 'Advance Pet Clinic',
-        description: '',
-        position: {
-            lat: 24.770316,
-            lng: 46.688941
-        },
-        isVisible: true
-    },
-    // Elite Pet Clinic
-    {
-        title: 'Elite Pet Clinic',
-        description: '',
-        position: {
-            lat: 24.763679,
-            lng: 46.624386
-        },
-        isVisible: true
-    },
-    //Joon Veterinary Clinic & Pet Shop
-    {
-        title: 'Joon Veterinary Clinic & Pet Shop',
-        description: '',
-        position: {
-            lat: 24.675703,
-            lng: 46.674264
-        },
-        isVisible: true
-    },
-    //aleef World
-    {
-        title: 'Aleef World',
-        description: '',
-        position: {
-            lat: 24.639621,
-            lng: 46.822677
-        },
-        isVisible: true
-    },
-    //Riyadh Animal Shelter
-    {
-        title: 'Riyadh Animal Shelter',
-        description: '',
-        position: {
-            lat: 24.639808,
-            lng: 46.82256
-        },
-        isVisible: true
-    },
-    //Animal Planet
-    {
-        title: 'Animal Planet',
-        description: '',
-        position: {
-            lat: 24.715709,
-            lng: 46.696111
-        },
-        isVisible: true
-    }
+    {title: 'Advance Pet Clinic', description: '', position: {lat: 24.770316, lng: 46.688941}, isVisible: true},
+    {title: 'Elite Pet Clinic', description: '', position: {lat: 24.763679, lng: 46.624386}, isVisible: true},
+    {title: 'Joon Veterinary Clinic & Pet Shop', description: '', position: {lat: 24.675703, lng: 46.674264}, isVisible: true},
+    {title: 'Aleef World', description: '', position: {lat: 24.639621, lng: 46.822677}, isVisible: true},
+    {title: 'Riyadh Animal Shelter', description: '', position: {lat: 24.715709, lng: 46.696111}, isVisible: true},
 ];
 
 function initMap() {
