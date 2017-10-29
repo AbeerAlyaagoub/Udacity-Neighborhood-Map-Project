@@ -50,12 +50,16 @@ function initMap() {
         // Push the marker to our array of markers.
         markers.push(marker);
         // Create an onclick event to open an infowindow at each marker.
-        marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
-        });
+        addListeners(marker, largeInfowindow);
         getFourSquareData(marker);
-    }
+    } 
     
+}
+function addListeners (marker, largeInfowindow){
+
+    marker.addListener('click', function() {
+            populateInfoWindow(marker, largeInfowindow);
+        });
 }
 
 
@@ -86,20 +90,40 @@ var viewModel = {
 };
 viewModel.locations = ko.computed(function(){
         if(viewModel.filter() === ''){
+            // check if the markers are set, if so set all of them to visable
+            if(locations[0].marker){
+                for(var i=0; i<locations.length;i++)
+                {
+                    locations[i].marker.setMap(map);
+                }
+            }
             return locations;
         }
         else {
             var temp =[];
+            // set all maps to null
+            for(var k=0 ; k<locations.length;k++)
+                {
+                    locations[k].marker.setMap(null);
+                }
+
             locations.forEach(function(loc)
             {
                 if(viewModel.filter() == loc.title)
                     temp.push(loc);
             });
+            // show only the markers in temp array
+            for(var j=0 ;j<temp.length;j++)
+                {
+                    temp[j].marker.setMap(map);
+                }
+
             return temp;
         }
 
-
     }, this);
+
+
 
 viewModel.doSomethingWithTheMarker = function(location) {
     //console.log('click')
@@ -142,6 +166,9 @@ function getFourSquareData(marker) {
         // console.log(result.response.venues[0].contact.phone)  
         marker.contact=(result.response.venues[0].contact.phone);
 
+    }).fail(function(error) {
+        // console.log(result.response.venues[0].contact.phone)  
+        alert("request failed");
     });
 }
 
