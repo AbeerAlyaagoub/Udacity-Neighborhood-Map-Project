@@ -55,6 +55,12 @@ function initMap() {
     } 
     
 }
+
+//error handling
+function mapErrorMsg(){
+    alert("Request Failed");
+}
+
 function addListeners (marker, largeInfowindow){
 
     marker.addListener('click', function() {
