@@ -1,7 +1,8 @@
-
+// ============================
+// ===== Global Variables =====
+// ============================
 var map;
 
-// Create a new blank array for all the listing markers.
 var markers = []; 
 
 var locations = [
@@ -14,7 +15,6 @@ var locations = [
 
 
 function initMap() {
-    
     // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
@@ -26,7 +26,6 @@ function initMap() {
         scrollwheel: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
-
 
     var largeInfowindow = new google.maps.InfoWindow();
     // The following group uses the location array to create an array of markers on initialize.
@@ -40,45 +39,46 @@ function initMap() {
             position: position,
             icon: 'img/star-pin.png',
             title: title,
-            animation: google.maps.Animation.BOUNCE,
+            animation: google.maps.Animation.DROP,
             id: i,
             contact: ''
         });
 
         locations[i].marker = marker;
-
         // Push the marker to our array of markers.
         markers.push(marker);
         // Create an onclick event to open an infowindow at each marker.
         addListeners(marker, largeInfowindow);
         getFourSquareData(marker);
-    } 
-    
+    }
 }
 
-//error handling
-function mapErrorMsg(){
+
+// ======= Error Handling =======
+
+function mapErrorMsg() {
     alert("Request Failed");
 }
 
-function addListeners (marker, largeInfowindow){
-
+function addListeners(marker, largeInfowindow) {
     marker.addListener('click', function() {
-            populateInfoWindow(marker, largeInfowindow);
-        });
+        populateInfoWindow(marker, largeInfowindow);
+    });
 }
 
 
 /* This function populates the infowindow when the marker is clicked.
  We'll only allow one infowindow which will open at the marker that is clicked, 
  and populate based on that markers position.*/
-
 function populateInfoWindow(marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+        marker.setAnimation(null);
+    }, 2100);
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
         infowindow.setContent('<div>' + marker.title + '</div>' + '<div>' + marker.contact + '</div>');
-
         infowindow.open(map, marker);
         // Make sure the marker property is cleared if the infowindow is closed.
         infowindow.addListener('closeclick', function() {
@@ -86,50 +86,22 @@ function populateInfoWindow(marker, infowindow) {
         });
     }
 }
-// This function will loop through the markers array and display them all.
 
+// This function will loop through the markers array and display them all.
 var viewModel = {
     // locations: ko.observableArray(locations)
     filter: ko.observable(''),
-    
-
 };
-viewModel.locations = ko.computed(function(){
-        if(viewModel.filter() === ''){
-            // check if the markers are set, if so set all of them to visable
-            if(locations[0].marker){
-                for(var i=0; i<locations.length;i++)
-                {
-                    locations[i].marker.setMap(map);
-                }
-            }
-            return locations;
+viewModel.locations = ko.computed(function() {
+    var filterInput = viewModel.filter().toLowerCase();
+    return ko.utils.arrayFilter(locations, function(location) {
+        var match = location.title.toLowerCase().indexOf(filterInput) !== -1;
+        if (location.marker) {
+            location.marker.setVisible(match);
         }
-        else {
-            var temp =[];
-            // set all maps to null
-            for(var k=0 ; k<locations.length;k++)
-                {
-                    locations[k].marker.setMap(null);
-                }
-
-            locations.forEach(function(loc)
-            {
-                if(viewModel.filter() == loc.title)
-                    temp.push(loc);
-            });
-            // show only the markers in temp array
-            for(var j=0 ;j<temp.length;j++)
-                {
-                    temp[j].marker.setMap(map);
-                }
-
-            return temp;
-        }
-
-    }, this);
-
-
+        return match;
+    });
+}, this);
 
 viewModel.doSomethingWithTheMarker = function(location) {
     //console.log('click')
@@ -137,41 +109,33 @@ viewModel.doSomethingWithTheMarker = function(location) {
     google.maps.event.trigger(location.marker, "click");
     // do something with location.marker here, for example, marker bounce, open info window etc.
 };
-
-
-
 ko.applyBindings(viewModel);
 
-
-
-// ******************************************
-// ******************************************
 
 function getFourSquareData(marker) {
     console.log(marker);
     console.log(marker.position.lat());
     var CLIENT_ID = 'OOYA2MM4GVH024ZX5KLVRS11RCIUHYRX14DAFEUDMLVVDTX2',
-    CLIENT_SECRET = '2103LLTOZ1DRFGKEBLYWMD222WV0E4CI40UD0TWFLEBCVJPW',
-    version = '20171710',
-    ll = marker.position.lat() + ',' + marker.position.lng(),
-    query = marker.title,
-    base_url = "https://api.foursquare.com/v2/venues";
+        CLIENT_SECRET = '2103LLTOZ1DRFGKEBLYWMD222WV0E4CI40UD0TWFLEBCVJPW',
+        version = '20171710',
+        ll = marker.position.lat() + ',' + marker.position.lng(),
+        query = marker.title,
+        base_url = "https://api.foursquare.com/v2/venues";
+    $.ajax({
+        url: base_url + '/search',
+        dataType: 'json',
+        data: {
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            ll: ll,
+            v: version,
+            query: query,
+            async: true
+        }
 
-  $.ajax({
-      url: base_url + '/search',
-      dataType: 'json',
-      data: {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        ll: ll,
-        v: version,
-        query: query,
-        async: true
-      }
     }).done(function(result) {
         // console.log(result.response.venues[0].contact.phone)  
-        marker.contact=(result.response.venues[0].contact.phone);
-
+        marker.contact = (result.response.venues[0].contact.phone);
     }).fail(function(error) {
         // console.log(result.response.venues[0].contact.phone)  
         alert("request failed");
@@ -182,17 +146,16 @@ function getFourSquareData(marker) {
 function openNav() {
     document.getElementById("mySidenav")
         .style.width = "250px";
-    // document.getElementById("main")
-    //     .style.marginLeft = "250px";
+    document.getElementById("map")
+        .style.marginLeft = "220px";
     document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
 function closeNav() {
     document.getElementById("mySidenav")
         .style.width = "0";
-    document.getElementById("main")
+    document.getElementById("map")
         .style.marginLeft = "0";
     document.body.style.backgroundColor = "white";
 }
-
 
